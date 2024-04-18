@@ -1,4 +1,4 @@
-package com.manicuria.empresasservicio.model;
+package com.manicuria.citasservicio.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -13,19 +15,16 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Empresa {
+public class Cita {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nombre;
-    private String telefono;
-    private String direccion;
+    @Temporal(TemporalType.TIME)
+    private LocalTime hora;
+    @Temporal(TemporalType.DATE)
+    private LocalDate fecha;
     @ElementCollection
-    private List<String> horarios;
-    private String urlTwitter;
-    private String urlFacebook;
-    private String urlInstagram;
-    private Long logo;
+    private List<Long> listaDisponibles;
     @ElementCollection
-    private List<Long> listaCarrusel;
+    private List<Long> listaReservados;
 }
