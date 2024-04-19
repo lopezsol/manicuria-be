@@ -4,7 +4,6 @@ import com.manicuria.empresasservicio.dto.EmpresaDTO;
 import com.manicuria.empresasservicio.dto.EmpresaRedesDTO;
 import com.manicuria.empresasservicio.dto.ImagenDTO;
 import com.manicuria.empresasservicio.model.Empresa;
-import com.manicuria.empresasservicio.model.Imagen;
 import com.manicuria.empresasservicio.repository.IEmpresaRepository;
 import com.manicuria.empresasservicio.repository.ImagenAPI;
 import org.springframework.beans.factory.annotation.Autowired;

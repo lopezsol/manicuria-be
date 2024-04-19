@@ -4,7 +4,6 @@ import com.manicuria.empresasservicio.dto.EmpresaDTO;
 import com.manicuria.empresasservicio.dto.EmpresaRedesDTO;
 import com.manicuria.empresasservicio.dto.ImagenDTO;
 import com.manicuria.empresasservicio.model.Empresa;
-import com.manicuria.empresasservicio.model.Imagen;
 
 import java.util.List;
 
