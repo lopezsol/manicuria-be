@@ -56,8 +56,7 @@ public class CitaController {
 
     @GetMapping("/traer/disponible/profesional/{id}/{fecha}")
     public CitaHoraDTO traerCitasDisponiblesProfesionalFecha(@PathVariable Long id,
-                                                                   @PathVariable LocalDate fecha) {
-        System.out.println(fecha);
-        return citaService.traerCitasDisponiblesProfesionalFecha(id, fecha);
+                                                             @PathVariable LocalDate fecha) {
+        return citaService.traerHorasDisponiblesProfesionalFecha(id, fecha);
     }
 }
