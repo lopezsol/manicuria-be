@@ -42,4 +42,10 @@ public class ProfesionalController {
         profesionalService.editarProfesional(profesional);
         return "Profesional editado correctamente";
     }
+
+    @GetMapping("/traer/servicio/{idServicio}")
+    public List<Profesional> traerProfesionalesXServicio(@PathVariable Long idServicio) {
+
+        return profesionalService.traerProfesionalesXServicio(idServicio);
+    }
 }

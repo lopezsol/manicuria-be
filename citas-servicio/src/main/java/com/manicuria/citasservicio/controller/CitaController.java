@@ -1,6 +1,7 @@
 package com.manicuria.citasservicio.controller;
 
 import com.manicuria.citasservicio.dto.CitaHoraDTO;
+import com.manicuria.citasservicio.dto.PrimerProfesionalHorasDTO;
 import com.manicuria.citasservicio.model.Cita;
 import com.manicuria.citasservicio.service.ICitaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,19 +45,29 @@ public class CitaController {
         return "Cita editada correctamente";
     }
 
-    @GetMapping("/traer/disponible/profesional/{id}")
-    public List<Cita> traerCitasDisponiblesProfesional(@PathVariable Long id) {
-        return citaService.traerCitasDisponiblesProfesional(id);
+    @GetMapping("/traer/disponible/profesional/{idProfesional}")
+    public List<Cita> traerCitasDisponiblesProfesional(@PathVariable Long idProfesional) {
+        return citaService.traerCitasDisponiblesProfesional(idProfesional);
     }
 
-    @GetMapping("/traer/filtradas/disponible/profesional/{id}")
-    public List<Cita> traerCitasDisponiblesProfesionalFiltradas(@PathVariable Long id) {
-        return citaService.traerCitasDisponiblesProfesionalFiltradas(id);
+    @GetMapping("/traer/filtradas/disponible/profesional/{idProfesional}")
+    public List<Cita> traerCitasDisponiblesProfesionalFiltradas(@PathVariable Long idProfesional) {
+        return citaService.traerCitasDisponiblesProfesionalFiltradas(idProfesional);
     }
 
-    @GetMapping("/traer/disponible/profesional/{id}/{fecha}")
-    public List<CitaHoraDTO> traerCitasDisponiblesProfesionalFecha(@PathVariable Long id,
+    @GetMapping("/traer/disponible/profesional/horas/{idProfesional}/{fecha}")
+    public List<CitaHoraDTO> traerHorasDisponiblesProfesionalFecha(@PathVariable Long idProfesional,
                                                              @PathVariable LocalDate fecha) {
-        return citaService.traerHorasDisponiblesProfesionalFecha(id, fecha);
+        return citaService.traerHorasDisponiblesProfesionalFecha(idProfesional, fecha);
+    }
+
+    @GetMapping("/traer/primer-profesional")
+    public List<Cita> traerPrimerProfesionalDisponible() {
+        return citaService.traerPrimerProfesionalDisponible();
+    }
+
+    @GetMapping("/traer/primer-profesional/horas/{fecha}")
+    public List<PrimerProfesionalHorasDTO> traerHorasPrimerProfesionalDisponible(@PathVariable LocalDate fecha) {
+        return citaService.traerHorasDisponiblesPrimerProfesional(fecha);
     }
 }

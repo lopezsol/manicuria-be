@@ -22,4 +22,10 @@ public interface ICitaRepository extends JpaRepository<Cita, Long> {
     List<Cita> findAllByListaDisponiblesAndFechaGreaterThanEqualAndHoraGreaterThanEqualOrderByFechaAsc(
             Long id, LocalDate fecha, LocalTime hora);
 
+    List<Cita> findAllByListaDisponiblesInAndFechaGreaterThanEqualAndHoraGreaterThanEqualOrderByFechaAsc(
+            List<Long> listaProfesionales,LocalDate fecha, LocalTime hora);
+
+    public  List<Cita> findAllByListaDisponiblesInAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
+            List<Long> listaProfesionales, LocalDate fecha, LocalTime hora);
+
 }
