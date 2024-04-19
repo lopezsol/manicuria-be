@@ -14,5 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CitaHoraDTO {
-    private List<LocalTime> horas;
+    private Long id;
+    private LocalTime hora;
 }

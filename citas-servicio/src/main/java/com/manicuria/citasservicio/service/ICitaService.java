@@ -17,5 +17,5 @@ public interface ICitaService {
     //trae las citas disponibles de un profesional a partir de la fecha actual
     public List<Cita> traerCitasDisponiblesProfesionalFiltradas(Long id);
 
-    public CitaHoraDTO traerHorasDisponiblesProfesionalFecha(Long id, LocalDate fecha);
+    public List<CitaHoraDTO> traerHorasDisponiblesProfesionalFecha(Long id, LocalDate fecha);
 }

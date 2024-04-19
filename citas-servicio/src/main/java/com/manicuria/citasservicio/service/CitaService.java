@@ -15,6 +15,7 @@ import java.util.List;
 public class CitaService implements ICitaService {
     @Autowired
     private ICitaRepository citaRepository;
+    private int minAnterioridadCita = 15;
 
     @Override
     public void crearCita(Cita cita) {
@@ -43,24 +44,44 @@ public class CitaService implements ICitaService {
 
     @Override
     public List<Cita> traerCitasDisponiblesProfesional(Long id) {
-        return citaRepository.findAllByListaDisponibles(id);
+        return citaRepository.findAllByListaDisponiblesOrderByFechaAscHoraAsc(id);
     }
 
     @Override
     public List<Cita> traerCitasDisponiblesProfesionalFiltradas(Long id) {
-        return List.of();
+
+        LocalDate fecha = LocalDate.now();
+        LocalTime horaActual = LocalTime.now();
+        LocalTime hora = horaActual.plusMinutes(minAnterioridadCita);
+        //cambiar, hay que ver la hora de apertura de la empresa
+        //no se si va a necesitar
+        //LocalTime horaApertura = LocalTime.of(10, 0);
+        //horaApertura = horaApertura.minusMinutes(60);
+        /*if (hora.equals(horaCierre) || hora.isAfter(horaCierre)) {
+            fecha = LocalDate.of(fecha.getYear(), fecha.getMonth(), fecha.getDayOfMonth() + 1);
+        }*/
+        System.out.println("hora actual: " + horaActual);
+        System.out.println("hora: " + hora);
+        //System.out.println("hora apertura: " + horaApertura);
+        System.out.println("fecha: " + fecha);
+
+        return citaRepository.findAllByListaDisponiblesAndFechaGreaterThanEqualAndHoraGreaterThanEqualOrderByFechaAsc(
+                id, fecha, hora);
     }
 
     @Override
-    public CitaHoraDTO traerHorasDisponiblesProfesionalFecha(Long id, LocalDate fecha) {
-        List<Cita> citas = citaRepository.findAllByListaDisponiblesAndFecha(id, fecha);
-        CitaHoraDTO horasDTO = new CitaHoraDTO();
-        List<LocalTime> horas = new ArrayList<>();
+    public List<CitaHoraDTO> traerHorasDisponiblesProfesionalFecha(Long id, LocalDate fecha) {
+        LocalTime horaActual = LocalTime.now();
+        LocalTime hora = horaActual.plusMinutes(minAnterioridadCita);
+
+        List<Cita> citas = citaRepository.findAllByListaDisponiblesAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
+                id, fecha, hora);
+        List<CitaHoraDTO> citasHorasDTO = new ArrayList<>();
 
         for (Cita c : citas) {
-            horas.add(c.getHora());
+            CitaHoraDTO cita = new CitaHoraDTO(c.getId(),c.getHora());
+            citasHorasDTO.add(cita);
         }
-        horasDTO.setHoras(horas);
-        return horasDTO;
+        return citasHorasDTO;
     }
 }
