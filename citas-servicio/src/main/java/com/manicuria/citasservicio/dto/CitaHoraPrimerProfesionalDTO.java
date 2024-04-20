@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PrimerProfesionalHorasDTO {
+public class CitaHoraPrimerProfesionalDTO {
     private Long id;
     private LocalTime hora;
     private List<Long> listaProfesionales;

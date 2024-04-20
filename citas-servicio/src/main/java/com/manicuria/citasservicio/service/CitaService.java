@@ -1,7 +1,7 @@
 package com.manicuria.citasservicio.service;
 
 import com.manicuria.citasservicio.dto.CitaHoraDTO;
-import com.manicuria.citasservicio.dto.PrimerProfesionalHorasDTO;
+import com.manicuria.citasservicio.dto.CitaHoraPrimerProfesionalDTO;
 import com.manicuria.citasservicio.model.Cita;
 import com.manicuria.citasservicio.repository.ICitaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,86 +50,118 @@ public class CitaService implements ICitaService {
 
     @Override
     public List<Cita> traerCitasDisponiblesProfesionalFiltradas(Long idProfesional) {
-        LocalDate fecha = obtenerFecha();
+        LocalDate fecha = obtenerFechaActual();
         LocalTime hora = obtenerHora();
-
-        return citaRepository.findAllByListaDisponiblesAndFechaGreaterThanEqualAndHoraGreaterThanEqualOrderByFechaAsc(
-                idProfesional, fecha, hora);
+        List<Cita> citas = citaRepository.findAllByListaDisponiblesAndFechaGreaterThanEqualOrderByFechaAsc(
+                idProfesional, fecha);
+        return filtrarCitaFechaHora(citas,fecha,hora);
     }
 
     @Override
     public List<CitaHoraDTO> traerHorasDisponiblesProfesionalFecha(Long idProfesional, LocalDate fecha) {
         LocalTime hora = obtenerHora();
+        LocalDate fechaActual = obtenerFechaActual();
+        List<Cita> citas;
+        /*
+            si la fecha pasada por parametro es igual que la fecha actual, filtro por la hora
+            actual, caso contrario, no filtro por la hora actual
+         */
+        if (fechaActual.equals(fecha)) {
+            citas = citaRepository.findAllByListaDisponiblesAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
+                    idProfesional, fecha, hora);
+        } else {
+            citas = citaRepository.findAllByListaDisponiblesAndFechaOrderByHoraAsc(
+                    idProfesional, fecha);
+        }
 
-        List<Cita> citas = citaRepository.findAllByListaDisponiblesAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
-                idProfesional, fecha, hora);
         List<CitaHoraDTO> citasHorasDTO = new ArrayList<>();
 
         for (Cita c : citas) {
-            CitaHoraDTO cita = new CitaHoraDTO(c.getId(),c.getHora());
+            CitaHoraDTO cita = new CitaHoraDTO(c.getId(), c.getHora());
             citasHorasDTO.add(cita);
         }
         return citasHorasDTO;
     }
 
     @Override
-    public List<Cita> traerPrimerProfesionalDisponible() {
-        LocalDate fecha = obtenerFecha();
+    public List<Cita> traerPrimerProfesionalDisponible(List<Long> listaProfesionales) {
+        LocalDate fechaActual = obtenerFechaActual();
+        LocalDate fechaFin = fechaActual.plusDays(31);
         LocalTime hora = obtenerHora();
-        //cambiar la forma en la que se obtiene este array, minimo deberia estar conectado
-        //a la api de profesionales para traer cuales hacen ese servicio
-        List<Long> listaProfesionales = new ArrayList<>();
-        listaProfesionales.add(1L);
-        listaProfesionales.add(4L);
-        return citaRepository.findAllByListaDisponiblesInAndFechaGreaterThanEqualAndHoraGreaterThanEqualOrderByFechaAsc(
-                listaProfesionales, fecha, hora);
+        List<Cita> citas = citaRepository.findByFechaBetweenAndListaDisponiblesInOrderByFechaAsc(fechaActual, fechaFin, listaProfesionales);
+        return filtrarCitaFechaHora(citas, fechaActual, hora);
     }
 
     @Override
-    public List<PrimerProfesionalHorasDTO> traerHorasDisponiblesPrimerProfesional(LocalDate fecha) {
-        LocalTime hora = obtenerHora();
-        //cambiar la forma en la que se obtiene este array, minimo deberia estar conectado
-        //a la api de profesionales para traer cuales hacen ese servicio
-        List<Long> listaProfesionales = new ArrayList<>();
-        listaProfesionales.add(1L);
-        listaProfesionales.add(4L);
-        List<Cita> citas = citaRepository.findAllByListaDisponiblesInAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
-                listaProfesionales, fecha, hora);
-        List<PrimerProfesionalHorasDTO> citasHorasDTO = new ArrayList<>();
+    public List<CitaHoraPrimerProfesionalDTO> traerHorasDisponiblesPrimerProfesional(
+            List<Long> listaProfesionales,
+            LocalDate fecha) {
 
+        LocalTime hora = obtenerHora();
+        LocalDate fechaActual = obtenerFechaActual();
+        List<Cita> citas;
+        /*
+            si la fecha pasada por parametro es igual que la fecha actual, filtro por la hora
+            actual, caso contrario, no filtro por la hora actual
+         */
+        if (fechaActual.equals(fecha)) {
+            citas = citaRepository.findAllByListaDisponiblesInAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
+                    listaProfesionales, fecha, hora);
+        } else {
+            citas = citaRepository.findAllByListaDisponiblesInAndFechaOrderByHoraAsc(
+                    listaProfesionales, fecha);
+        }
+
+        return getCitaHoraPrimerProfesionalDTOS(listaProfesionales, citas);
+    }
+
+    private static List<CitaHoraPrimerProfesionalDTO> getCitaHoraPrimerProfesionalDTOS(
+            List<Long> listaProfesionales, List<Cita> citas) {
+        List<CitaHoraPrimerProfesionalDTO> citasHorasDTO = new ArrayList<>();
+        /*
+            crea una lista de objetos tipo CitaHoraPrimerProfesionalDTO,
+            en donde se devuelve el id de la cita, la hora y UNICAMENTE la lista de profesionales
+            que pueden realizar el servicio solicitado
+         */
         for (Cita c : citas) {
             List<Long> listaProfesionalesDTO = new ArrayList<>();
-            for(Long profesional: c.getListaDisponibles()) {
-                if(listaProfesionales.contains(profesional) ){
+            for (Long profesional : c.getListaDisponibles()) {
+                if (listaProfesionales.contains(profesional)) {
                     listaProfesionalesDTO.add(profesional);
                 }
             }
-            PrimerProfesionalHorasDTO cita = new PrimerProfesionalHorasDTO(
-                    c.getId(),c.getHora(), listaProfesionalesDTO);
+            CitaHoraPrimerProfesionalDTO cita = new CitaHoraPrimerProfesionalDTO(
+                    c.getId(), c.getHora(), listaProfesionalesDTO);
             citasHorasDTO.add(cita);
         }
         return citasHorasDTO;
     }
 
-    public LocalDate obtenerFecha() {
-        System.out.println("fecha: " + LocalDate.now());
+    //Obtiene la fecha actual
+    private LocalDate obtenerFechaActual() {
         return LocalDate.now();
     }
 
-    public LocalTime obtenerHora() {
+    /*
+        Adiciona a la hora actual los minutos indicados con que se tiene
+        que pedir con anterioridad una cita
+     */
+    private LocalTime obtenerHora() {
         LocalTime horaActual = LocalTime.now();
-        LocalTime hora = horaActual.plusMinutes(minAnterioridadCita);
-        //cambiar, hay que ver la hora de apertura de la empresa
-        //no se si va a necesitar
-        //LocalTime horaApertura = LocalTime.of(10, 0);
-        //horaApertura = horaApertura.minusMinutes(60);
-        /*if (hora.equals(horaCierre) || hora.isAfter(horaCierre)) {
-            fecha = LocalDate.of(fecha.getYear(), fecha.getMonth(), fecha.getDayOfMonth() + 1);
-        }*/
-        System.out.println("hora actual: " + horaActual);
-        System.out.println("hora: " + hora);
-        //System.out.println("hora apertura: " + horaApertura);
+        return horaActual.plusMinutes(minAnterioridadCita);
+    }
 
-        return hora;
+    /*
+        Remueve las citas que tienen un horario anterior que la hora actual, para una fecha
+        indicada como parametro
+     */
+    private List<Cita> filtrarCitaFechaHora(List<Cita> listaCitas, LocalDate fecha,
+                                           LocalTime hora) {
+        System.out.println("Hora: " + hora);
+        System.out.println("fecha: " + fecha);
+
+        listaCitas.removeIf(c -> c.getFecha().equals(fecha) && c.getHora().isBefore(hora));
+        return listaCitas;
+
     }
 }

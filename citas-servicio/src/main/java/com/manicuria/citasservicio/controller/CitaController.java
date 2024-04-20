@@ -1,7 +1,7 @@
 package com.manicuria.citasservicio.controller;
 
 import com.manicuria.citasservicio.dto.CitaHoraDTO;
-import com.manicuria.citasservicio.dto.PrimerProfesionalHorasDTO;
+import com.manicuria.citasservicio.dto.CitaHoraPrimerProfesionalDTO;
 import com.manicuria.citasservicio.model.Cita;
 import com.manicuria.citasservicio.service.ICitaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,12 +62,15 @@ public class CitaController {
     }
 
     @GetMapping("/traer/primer-profesional")
-    public List<Cita> traerPrimerProfesionalDisponible() {
-        return citaService.traerPrimerProfesionalDisponible();
+    public List<Cita> traerPrimerProfesionalDisponible(@RequestParam("idProfesional") List<Long> listaProfesionales) {
+        return citaService.traerPrimerProfesionalDisponible(listaProfesionales);
     }
 
     @GetMapping("/traer/primer-profesional/horas/{fecha}")
-    public List<PrimerProfesionalHorasDTO> traerHorasPrimerProfesionalDisponible(@PathVariable LocalDate fecha) {
-        return citaService.traerHorasDisponiblesPrimerProfesional(fecha);
+    public List<CitaHoraPrimerProfesionalDTO> traerHorasPrimerProfesionalDisponible(@PathVariable LocalDate fecha,
+                                                                                    @RequestParam("idProfesional")
+                                                                                 List<Long> listaProfesionales) {
+        System.out.println("listaProfesionales: " + listaProfesionales);
+        return citaService.traerHorasDisponiblesPrimerProfesional(listaProfesionales, fecha);
     }
 }
