@@ -157,9 +157,6 @@ public class CitaService implements ICitaService {
      */
     private List<Cita> filtrarCitaFechaHora(List<Cita> listaCitas, LocalDate fecha,
                                            LocalTime hora) {
-        System.out.println("Hora: " + hora);
-        System.out.println("fecha: " + fecha);
-
         listaCitas.removeIf(c -> c.getFecha().equals(fecha) && c.getHora().isBefore(hora));
         return listaCitas;
 

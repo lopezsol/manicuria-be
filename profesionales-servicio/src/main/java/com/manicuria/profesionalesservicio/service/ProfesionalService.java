@@ -40,7 +40,6 @@ public class ProfesionalService implements IProfesionalService{
 
     @Override
     public List<Profesional> traerProfesionalesXServicio(Long idServicio) {
-        System.out.println(profesionalRepository.findAllByListaServiciosOrderByNombreAsc(idServicio));
         return profesionalRepository.findAllByListaServiciosOrderByNombreAsc(idServicio);
     }
 }
