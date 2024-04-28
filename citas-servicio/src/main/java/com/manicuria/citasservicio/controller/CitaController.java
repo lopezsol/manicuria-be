@@ -2,9 +2,12 @@ package com.manicuria.citasservicio.controller;
 
 import com.manicuria.citasservicio.dto.CitaHoraDTO;
 import com.manicuria.citasservicio.dto.CitaHoraPrimerProfesionalDTO;
+import com.manicuria.citasservicio.dto.ErrorResponse;
 import com.manicuria.citasservicio.model.Cita;
 import com.manicuria.citasservicio.service.ICitaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -16,61 +19,161 @@ import java.util.List;
 public class CitaController {
     @Autowired
     private ICitaService citaService;
+    final ErrorResponse errorServidor = new ErrorResponse("Se produjo un error " +
+            "interno en el servidor");
 
     @PostMapping("/crear")
-    public String crearCita(@RequestBody Cita cita) {
-        citaService.crearCita(cita);
-        return "Cita creada correctamente";
+    public ResponseEntity<Object> crearCita(@RequestBody Cita cita) {
+        if (cita == null || cita.getFecha() == null
+                || cita.getHora() == null) {
+            ErrorResponse errorResponse = new ErrorResponse("Los datos de la" +
+                    " cita son incorrectos o faltan");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+        try {
+            citaService.crearCita(cita);
+
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
     }
 
     @GetMapping("/traer")
-    public List<Cita> traerCitas() {
-        return citaService.traerCitas();
+    public ResponseEntity<Object> traerCitas() {
+        try {
+            return ResponseEntity.ok(citaService.traerCitas());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
+
     }
 
     @GetMapping("/traer/{id}")
-    public Cita traerCita(@PathVariable Long id) {
-        return citaService.traerCita(id);
+    public ResponseEntity<Object> traerCita(@PathVariable Long id) {
+        try {
+            Cita citaBuscada = citaService.traerCita(id);
+            if (citaBuscada == null) {
+                ErrorResponse errorResponse = new ErrorResponse("No se encontró" +
+                        " la cita con id " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+            return ResponseEntity.ok(citaBuscada);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
     }
 
     @DeleteMapping("/borrar/{id}")
-    public String borrarCita(@PathVariable Long id) {
-        citaService.eliminarCita(id);
-        return "Cita borrada correctamente";
+    public ResponseEntity<Object> borrarCita(@PathVariable Long id) {
+        try {
+            citaService.eliminarCita(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
     }
 
     @PutMapping("/editar")
-    public String editarCita(@RequestBody Cita cita) {
-        citaService.editarCita(cita);
-        return "Cita editada correctamente";
+    public ResponseEntity<Object> editarCita(@RequestBody Cita cita) {
+        if (cita == null || cita.getFecha() == null
+                || cita.getHora() == null || cita.getId() == null
+
+        ) {
+            ErrorResponse errorResponse = new ErrorResponse("Los datos de la" +
+                    " cita son incorrectos o faltan");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+        try {
+            citaService.editarCita(cita);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
     }
 
     @GetMapping("/traer/disponible/profesional/{idProfesional}")
-    public List<Cita> traerCitasDisponiblesProfesional(@PathVariable Long idProfesional) {
-        return citaService.traerCitasDisponiblesProfesional(idProfesional);
+    public ResponseEntity<Object> traerCitasDisponiblesProfesional(@PathVariable Long idProfesional) {
+        try {
+            List<Cita> citas = citaService.traerCitasDisponiblesProfesional(idProfesional);
+            if (citas.isEmpty()) {
+                ErrorResponse errorResponse = new ErrorResponse("No se encontraron" +
+                        " citas disponibles para el profesional " + idProfesional);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+            return ResponseEntity.ok(citas);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
     }
 
     @GetMapping("/traer/filtradas/disponible/profesional/{idProfesional}")
-    public List<Cita> traerCitasDisponiblesProfesionalFiltradas(@PathVariable Long idProfesional) {
-        return citaService.traerCitasDisponiblesProfesionalFiltradas(idProfesional);
+    public ResponseEntity<Object> traerCitasDisponiblesProfesionalFiltradas(
+            @PathVariable Long idProfesional) {
+        try {
+            List<Cita> citas = citaService.traerCitasDisponiblesProfesionalFiltradas(idProfesional);
+            if (citas.isEmpty()) {
+                ErrorResponse errorResponse = new ErrorResponse("No se encontraron" +
+                        " citas disponibles para el profesional " + idProfesional);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+            return ResponseEntity.ok(citas);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
     }
 
     @GetMapping("/traer/disponible/profesional/horas/{idProfesional}/{fecha}")
-    public List<CitaHoraDTO> traerHorasDisponiblesProfesionalFecha(@PathVariable Long idProfesional,
-                                                             @PathVariable LocalDate fecha) {
-        return citaService.traerHorasDisponiblesProfesionalFecha(idProfesional, fecha);
+    public ResponseEntity<Object> traerHorasDisponiblesProfesionalFecha(@PathVariable Long idProfesional,
+                                                                        @PathVariable LocalDate fecha) {
+        try {
+            List<CitaHoraDTO> citasHoras = citaService.
+                    traerHorasDisponiblesProfesionalFecha(idProfesional, fecha);
+            if (citasHoras.isEmpty()) {
+                ErrorResponse errorResponse = new ErrorResponse("No se encontraron" +
+                        " horas disponibles para la fecha " + fecha + " para profesional "
+                        + idProfesional);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+            return ResponseEntity.ok(citasHoras);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
     }
 
     @GetMapping("/traer/primer-profesional")
-    public List<Cita> traerPrimerProfesionalDisponible(@RequestParam("idProfesional") List<Long> listaProfesionales) {
-        return citaService.traerPrimerProfesionalDisponible(listaProfesionales);
+    public ResponseEntity<Object> traerPrimerProfesionalDisponible(
+            @RequestParam("idProfesional") List<Long> listaProfesionales) {
+        try {
+            List<Cita> citas = citaService.
+                    traerPrimerProfesionalDisponible(listaProfesionales);
+            if (citas.isEmpty()) {
+                ErrorResponse errorResponse = new ErrorResponse("No se encontraron" +
+                        " citas para los profesionales");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+            return ResponseEntity.ok(citas);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
     }
 
     @GetMapping("/traer/primer-profesional/horas/{fecha}")
-    public List<CitaHoraPrimerProfesionalDTO> traerHorasPrimerProfesionalDisponible(@PathVariable LocalDate fecha,
-                                                                                    @RequestParam("idProfesional")
-                                                                                 List<Long> listaProfesionales) {
-        System.out.println("listaProfesionales: " + listaProfesionales);
-        return citaService.traerHorasDisponiblesPrimerProfesional(listaProfesionales, fecha);
+    public ResponseEntity<Object> traerHorasPrimerProfesionalDisponible(@PathVariable LocalDate fecha,
+                                                                        @RequestParam("idProfesional")
+                                                                        List<Long> listaProfesionales) {
+        try {
+            List<CitaHoraPrimerProfesionalDTO> citasHoras = citaService.
+                    traerHorasDisponiblesPrimerProfesional(listaProfesionales, fecha);
+            if (citasHoras.isEmpty()) {
+                ErrorResponse errorResponse = new ErrorResponse("No se encontraron" +
+                        " horas disponibles para la fecha " + fecha);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+            return ResponseEntity.ok(citasHoras);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
     }
 }
