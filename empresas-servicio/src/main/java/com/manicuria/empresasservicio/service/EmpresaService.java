@@ -4,7 +4,6 @@ import com.manicuria.empresasservicio.dto.EmpresaDTO;
 import com.manicuria.empresasservicio.dto.EmpresaRedesDTO;
 import com.manicuria.empresasservicio.dto.ImagenDTO;
 import com.manicuria.empresasservicio.model.Empresa;
-import com.manicuria.empresasservicio.model.Imagen;
 import com.manicuria.empresasservicio.repository.IEmpresaRepository;
 import com.manicuria.empresasservicio.repository.ImagenAPI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EmpresaService implements IEmpresaService{
@@ -50,6 +50,9 @@ public class EmpresaService implements IEmpresaService{
     @Override
     public EmpresaDTO traerEmpresaDTO(Long id) {
         Empresa empresa = empresaRepository.findById(id).orElse(null);
+        if (empresa==null) {
+            return null;
+        }
         EmpresaDTO empresaDTO = new EmpresaDTO();
         List<ImagenDTO> listaCarrusel = new ArrayList<>();
 
@@ -76,6 +79,9 @@ public class EmpresaService implements IEmpresaService{
 
     public EmpresaRedesDTO traerRedes(Long id) {
         Empresa empresa = empresaRepository.findById(id).orElse(null);
+        if (empresa==null) {
+            return null;
+        }
         return new EmpresaRedesDTO(empresa.getUrlTwitter(),
                 empresa.getUrlFacebook(), empresa.getUrlInstagram());
     }
@@ -93,19 +99,34 @@ public class EmpresaService implements IEmpresaService{
     @Override
     public ImagenDTO traerLogo(Long id) {
         Empresa empresa = this.traerEmpresa(id);
-        return imagenAPI.traerImagen(empresa.getLogo());
+        if (empresa==null) {
+            return null;
+        }
+        try {
+            return imagenAPI.traerImagen(empresa.getLogo());
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public List<ImagenDTO> traerCarrusel(Long id) {
         Empresa empresa = this.traerEmpresa(id);
+        if (empresa==null) {
+            return null;
+        }
         List<ImagenDTO> listaCarrusel = new ArrayList<>();
 
         for(Long idImagen : empresa.getListaCarrusel()){
-            ImagenDTO carrusel = imagenAPI.traerImagen(idImagen);
-            listaCarrusel.add(carrusel);
+            try {
+                ImagenDTO carrusel = imagenAPI.traerImagen(idImagen);
+                listaCarrusel.add(carrusel);
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
-
         return listaCarrusel;
     }
 }

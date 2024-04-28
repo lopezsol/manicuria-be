@@ -11,4 +11,6 @@ public interface IProfesionalService {
     public void eliminarProfesional(Long id);
 
     public void editarProfesional(Profesional profesional);
+    public List<Profesional> traerProfesionalesXServicio(Long idServicio);
+
 }

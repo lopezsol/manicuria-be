@@ -37,4 +37,9 @@ public class ProfesionalService implements IProfesionalService{
     public void editarProfesional(Profesional profesional) {
         profesionalRepository.save(profesional);
     }
+
+    @Override
+    public List<Profesional> traerProfesionalesXServicio(Long idServicio) {
+        return profesionalRepository.findAllByListaServiciosOrderByNombreAsc(idServicio);
+    }
 }
