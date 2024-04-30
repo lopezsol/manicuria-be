@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.manicuria</groupId>
 	<artifactId>empresas-servicio</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>empresas-servicio</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
