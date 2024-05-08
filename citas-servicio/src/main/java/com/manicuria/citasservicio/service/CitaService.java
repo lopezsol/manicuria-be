@@ -45,14 +45,14 @@ public class CitaService implements ICitaService {
 
     @Override
     public List<Cita> traerCitasDisponiblesProfesional(Long idProfesional) {
-        return citaRepository.findAllByListaDisponiblesOrderByFechaAscHoraAsc(idProfesional);
+        return citaRepository.findAllByProfesionalesDisponiblesOrderByFechaAscHoraAsc(idProfesional);
     }
 
     @Override
     public List<Cita> traerCitasDisponiblesProfesionalFiltradas(Long idProfesional) {
         LocalDate fecha = obtenerFechaActual();
         LocalTime hora = obtenerHora();
-        List<Cita> citas = citaRepository.findAllByListaDisponiblesAndFechaGreaterThanEqualOrderByFechaAsc(
+        List<Cita> citas = citaRepository.findAllByProfesionalesDisponiblesAndFechaGreaterThanEqualOrderByFechaAsc(
                 idProfesional, fecha);
         return filtrarCitaFechaHora(citas,fecha,hora);
     }
@@ -67,10 +67,10 @@ public class CitaService implements ICitaService {
             actual, caso contrario, no filtro por la hora actual
          */
         if (fechaActual.equals(fecha)) {
-            citas = citaRepository.findAllByListaDisponiblesAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
+            citas = citaRepository.findAllByProfesionalesDisponiblesAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
                     idProfesional, fecha, hora);
         } else {
-            citas = citaRepository.findAllByListaDisponiblesAndFechaOrderByHoraAsc(
+            citas = citaRepository.findAllByProfesionalesDisponiblesAndFechaOrderByHoraAsc(
                     idProfesional, fecha);
         }
 
@@ -88,7 +88,7 @@ public class CitaService implements ICitaService {
         LocalDate fechaActual = obtenerFechaActual();
         LocalDate fechaFin = fechaActual.plusDays(31);
         LocalTime hora = obtenerHora();
-        List<Cita> citas = citaRepository.findByFechaBetweenAndListaDisponiblesInOrderByFechaAsc(fechaActual, fechaFin, listaProfesionales);
+        List<Cita> citas = citaRepository.findByFechaBetweenAndProfesionalesDisponiblesInOrderByFechaAsc(fechaActual, fechaFin, listaProfesionales);
         return filtrarCitaFechaHora(citas, fechaActual, hora);
     }
 
@@ -105,14 +105,54 @@ public class CitaService implements ICitaService {
             actual, caso contrario, no filtro por la hora actual
          */
         if (fechaActual.equals(fecha)) {
-            citas = citaRepository.findAllByListaDisponiblesInAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
+            citas = citaRepository.findAllByProfesionalesDisponiblesInAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
                     listaProfesionales, fecha, hora);
         } else {
-            citas = citaRepository.findAllByListaDisponiblesInAndFechaOrderByHoraAsc(
+            citas = citaRepository.findAllByProfesionalesDisponiblesInAndFechaOrderByHoraAsc(
                     listaProfesionales, fecha);
         }
 
         return getCitaHoraPrimerProfesionalDTOS(listaProfesionales, citas);
+    }
+
+    @Override
+    public void agregarProfesionalDisponible(Long idProfesional, Long idCita) {
+        Cita cita = this.traerCita(idCita);
+        List<Long> listaProfesionales = cita.getProfesionalesDisponibles();
+        listaProfesionales.add(idProfesional);
+        cita.setProfesionalesDisponibles(listaProfesionales);
+
+        this.editarCita(cita);
+    }
+
+    @Override
+    public void agregarProfesionalReservado(Long idProfesional, Long idCita) {
+        Cita cita = this.traerCita(idCita);
+        List<Long> listaProfesionales = cita.getProfesionalesReservados();
+        listaProfesionales.add(idProfesional);
+        cita.setProfesionalesReservados(listaProfesionales);
+        this.editarCita(cita);
+    }
+
+    @Override
+    public void eliminarProfesionalDisponible(Long idProfesional, Long idCita) {
+        Cita cita = this.traerCita(idCita);
+        List<Long> listaProfesionales = cita.getProfesionalesDisponibles();
+        listaProfesionales.remove(idProfesional);
+        cita.setProfesionalesDisponibles(listaProfesionales);
+
+        this.editarCita(cita);
+    }
+
+    @Override
+    public void eliminarProfesionalReservado(Long idProfesional, Long idCita) {
+        Cita cita = this.traerCita(idCita);
+        List<Long> listaProfesionales = cita.getProfesionalesReservados();
+        listaProfesionales.remove(idProfesional);
+        cita.setProfesionalesReservados(listaProfesionales);
+
+        this.editarCita(cita);
+
     }
 
     private static List<CitaHoraPrimerProfesionalDTO> getCitaHoraPrimerProfesionalDTOS(
@@ -125,7 +165,7 @@ public class CitaService implements ICitaService {
          */
         for (Cita c : citas) {
             List<Long> listaProfesionalesDTO = new ArrayList<>();
-            for (Long profesional : c.getListaDisponibles()) {
+            for (Long profesional : c.getProfesionalesDisponibles()) {
                 if (listaProfesionales.contains(profesional)) {
                     listaProfesionalesDTO.add(profesional);
                 }

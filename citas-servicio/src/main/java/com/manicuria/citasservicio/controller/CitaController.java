@@ -5,6 +5,7 @@ import com.manicuria.citasservicio.dto.CitaHoraPrimerProfesionalDTO;
 import com.manicuria.citasservicio.dto.ErrorResponse;
 import com.manicuria.citasservicio.model.Cita;
 import com.manicuria.citasservicio.service.ICitaService;
+import jakarta.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -172,6 +173,50 @@ public class CitaController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
             }
             return ResponseEntity.ok(citasHoras);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
+    }
+
+    @PutMapping("/agregar/profesional-disponible/{idProfesional}/{idCita}")
+    public ResponseEntity<Object> agregarProfesionalDisponible(@PathVariable Long idProfesional,
+                                             @PathVariable Long idCita) {
+        try {
+            citaService.agregarProfesionalDisponible(idProfesional, idCita);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
+    }
+
+    @PutMapping("/agregar/profesional-reservado/{idProfesional}/{idCita}")
+    public ResponseEntity<Object> agregarProfesionalReservado(@PathVariable Long idProfesional,
+                                             @PathVariable Long idCita) {
+        try {
+            citaService.agregarProfesionalReservado(idProfesional, idCita);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
+    }
+
+    @PutMapping("/eliminar/profesional-disponible/{idProfesional}/{idCita}")
+    public ResponseEntity<Object> eliminarProfesionalDisponible(@PathVariable Long idProfesional,
+                                                              @PathVariable Long idCita) {
+        try {
+            citaService.eliminarProfesionalDisponible(idProfesional, idCita);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
+    }
+
+    @PutMapping("/eliminar/profesional-reservado/{idProfesional}/{idCita}")
+    public ResponseEntity<Object> eliminarProfesionalReservado(@PathVariable Long idProfesional,
+                                                              @PathVariable Long idCita) {
+        try {
+            citaService.eliminarProfesionalReservado(idProfesional, idCita);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(errorServidor);
         }
