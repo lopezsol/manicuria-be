@@ -31,4 +31,12 @@ public interface ICitaService {
             List<Long> listaProfesionales,
             LocalDate fecha);
 
+    public void agregarProfesionalDisponible(Long idProfesional, Long idCita);
+
+    public void agregarProfesionalReservado(Long idProfesional, Long idCita);
+
+    public void eliminarProfesionalDisponible(Long idProfesional, Long idCita);
+
+    public void eliminarProfesionalReservado(Long idProfesional, Long idCita);
+
 }
