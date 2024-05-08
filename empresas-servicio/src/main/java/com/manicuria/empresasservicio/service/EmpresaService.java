@@ -14,11 +14,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class EmpresaService implements IEmpresaService{
+public class EmpresaService implements IEmpresaService {
     @Autowired
     private IEmpresaRepository empresaRepository;
     @Autowired
     private ImagenAPI imagenAPI;
+
     @Override
     public void crearEmpresa(Empresa empresa) {
         empresaRepository.save(empresa);
@@ -34,9 +35,9 @@ public class EmpresaService implements IEmpresaService{
         List<Empresa> empresas = empresaRepository.findAll();
         List<EmpresaDTO> empresasDTO = new ArrayList<>();
 
-        for(Empresa e: empresas){
+        for (Empresa e : empresas) {
             EmpresaDTO empresaDTO = this.traerEmpresaDTO(e.getId());
-            empresasDTO.add(empresaDTO);
+            if (empresaDTO != null) empresasDTO.add(empresaDTO);
         }
 
         return empresasDTO;
@@ -50,36 +51,39 @@ public class EmpresaService implements IEmpresaService{
     @Override
     public EmpresaDTO traerEmpresaDTO(Long id) {
         Empresa empresa = empresaRepository.findById(id).orElse(null);
-        if (empresa==null) {
-            return null;
-        }
+        if (empresa == null) return null;
+
         EmpresaDTO empresaDTO = new EmpresaDTO();
         List<ImagenDTO> listaCarrusel = new ArrayList<>();
 
-        //logo en la clase Empresa es un id de tipo Long, que hace referencia a la imagen
-        ImagenDTO logo = imagenAPI.traerImagen(empresa.getLogo());
-        //recorro los id de las imagenes del carrusel y los asigno en listaCarrusel
-        for(Long idImagen : empresa.getListaCarrusel()){
-            ImagenDTO carrusel = imagenAPI.traerImagen(idImagen);
-            listaCarrusel.add(carrusel);
+        try {
+            //logo en la clase Empresa es un id de tipo Long, que hace referencia a la imagen
+            ImagenDTO logo = imagenAPI.traerImagen(empresa.getLogo());
+            //recorro los id de las imagenes del carrusel y los asigno en listaCarrusel
+            for (Long idImagen : empresa.getListaCarrusel()) {
+                ImagenDTO carrusel = imagenAPI.traerImagen(idImagen);
+                listaCarrusel.add(carrusel);
+            }
+            empresaDTO.setId(empresa.getId());
+            empresaDTO.setNombre(empresa.getNombre());
+            empresaDTO.setTelefono(empresa.getTelefono());
+            empresaDTO.setDireccion(empresa.getDireccion());
+            empresaDTO.setHorarios(empresa.getHorarios());
+            empresaDTO.setUrlTwitter(empresa.getUrlTwitter());
+            empresaDTO.setUrlFacebook(empresa.getUrlFacebook());
+            empresaDTO.setUrlInstagram(empresa.getUrlInstagram());
+            empresaDTO.setLogo(logo);
+            empresaDTO.setListaCarrusel(listaCarrusel);
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
         }
-        empresaDTO.setId(empresa.getId());
-        empresaDTO.setNombre(empresa.getNombre());
-        empresaDTO.setTelefono(empresa.getTelefono());
-        empresaDTO.setDireccion(empresa.getDireccion());
-        empresaDTO.setHorarios(empresa.getHorarios());
-        empresaDTO.setUrlTwitter(empresa.getUrlTwitter());
-        empresaDTO.setUrlFacebook(empresa.getUrlFacebook());
-        empresaDTO.setUrlInstagram(empresa.getUrlInstagram());
-        empresaDTO.setLogo(logo);
-        empresaDTO.setListaCarrusel(listaCarrusel);
-
         return empresaDTO;
     }
 
     public EmpresaRedesDTO traerRedes(Long id) {
         Empresa empresa = empresaRepository.findById(id).orElse(null);
-        if (empresa==null) {
+        if (empresa == null) {
             return null;
         }
         return new EmpresaRedesDTO(empresa.getUrlTwitter(),
@@ -99,13 +103,13 @@ public class EmpresaService implements IEmpresaService{
     @Override
     public ImagenDTO traerLogo(Long id) {
         Empresa empresa = this.traerEmpresa(id);
-        if (empresa==null) {
+        if (empresa == null) {
             return null;
         }
         try {
             return imagenAPI.traerImagen(empresa.getLogo());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
+            System.out.println(e);
             return null;
         }
     }
@@ -113,17 +117,17 @@ public class EmpresaService implements IEmpresaService{
     @Override
     public List<ImagenDTO> traerCarrusel(Long id) {
         Empresa empresa = this.traerEmpresa(id);
-        if (empresa==null) {
+        if (empresa == null) {
             return null;
         }
         List<ImagenDTO> listaCarrusel = new ArrayList<>();
 
-        for(Long idImagen : empresa.getListaCarrusel()){
+        for (Long idImagen : empresa.getListaCarrusel()) {
             try {
                 ImagenDTO carrusel = imagenAPI.traerImagen(idImagen);
                 listaCarrusel.add(carrusel);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
+                System.out.println(e);
                 return null;
             }
         }

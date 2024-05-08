@@ -11,24 +11,24 @@ import java.util.List;
 
 @Repository
 public interface ICitaRepository extends JpaRepository<Cita, Long> {
-    List<Cita> findAllByListaDisponiblesOrderByFechaAscHoraAsc(Long id);
+    List<Cita> findAllByProfesionalesDisponiblesOrderByFechaAscHoraAsc(Long id);
 
-    public List<Cita> findAllByListaDisponiblesAndFechaOrderByHoraAsc(
+    public List<Cita> findAllByProfesionalesDisponiblesAndFechaOrderByHoraAsc(
             Long id, LocalDate fecha);
 
-    public List<Cita> findAllByListaDisponiblesAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
+    public List<Cita> findAllByProfesionalesDisponiblesAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
             Long id, LocalDate fecha, LocalTime hora);
 
-    List<Cita> findAllByListaDisponiblesAndFechaGreaterThanEqualOrderByFechaAsc(
+    List<Cita> findAllByProfesionalesDisponiblesAndFechaGreaterThanEqualOrderByFechaAsc(
             Long id, LocalDate fecha);
 
-    List<Cita> findAllByListaDisponiblesInAndFechaOrderByHoraAsc(
+    List<Cita> findAllByProfesionalesDisponiblesInAndFechaOrderByHoraAsc(
             List<Long> listaProfesionales, LocalDate fecha);
 
-    List<Cita> findAllByListaDisponiblesInAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
+    List<Cita> findAllByProfesionalesDisponiblesInAndFechaAndHoraGreaterThanEqualOrderByHoraAsc(
             List<Long> listaProfesionales, LocalDate fecha, LocalTime hora);
 
-    List<Cita> findByFechaBetweenAndListaDisponiblesInOrderByFechaAsc(
+    List<Cita> findByFechaBetweenAndProfesionalesDisponiblesInOrderByFechaAsc(
             LocalDate fechaInicio, LocalDate fechaFin, List<Long> idProfesionales);
 
 }

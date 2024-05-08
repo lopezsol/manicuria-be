@@ -24,7 +24,7 @@ public class Cita {
     @Temporal(TemporalType.DATE)
     private LocalDate fecha;
     @ElementCollection
-    private List<Long> listaDisponibles;
+    private List<Long> profesionalesDisponibles;
     @ElementCollection
-    private List<Long> listaReservados;
+    private List<Long> profesionalesReservados;
 }
