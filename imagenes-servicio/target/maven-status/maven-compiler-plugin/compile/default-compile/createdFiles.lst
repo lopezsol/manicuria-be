@@ -1,0 +1,7 @@
+com\manicuria\imagenesservicio\repository\IImagenRepository.class
+com\manicuria\imagenesservicio\model\Imagen.class
+com\manicuria\imagenesservicio\controller\ImagenController.class
+com\manicuria\imagenesservicio\dto\ErrorResponse.class
+com\manicuria\imagenesservicio\ImagenesServicioApplication.class
+com\manicuria\imagenesservicio\service\ImagenService.class
+com\manicuria\imagenesservicio\service\IImagenService.class

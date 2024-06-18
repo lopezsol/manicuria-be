@@ -1,0 +1,11 @@
+com\manicuria\empresasservicio\dto\ErrorResponse.class
+com\manicuria\empresasservicio\model\Empresa.class
+com\manicuria\empresasservicio\dto\EmpresaRedesDTO.class
+com\manicuria\empresasservicio\EmpresasServicioApplication.class
+com\manicuria\empresasservicio\repository\ImagenAPI.class
+com\manicuria\empresasservicio\service\EmpresaService.class
+com\manicuria\empresasservicio\controller\EmpresaController.class
+com\manicuria\empresasservicio\repository\IEmpresaRepository.class
+com\manicuria\empresasservicio\service\IEmpresaService.class
+com\manicuria\empresasservicio\dto\EmpresaDTO.class
+com\manicuria\empresasservicio\dto\ImagenDTO.class

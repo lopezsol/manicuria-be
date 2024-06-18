@@ -1,0 +1,220 @@
+version: '3'
+
+services:
+  eureka-sv:
+    build: eureka-sv
+    mem_limit: 512m
+    ports:
+      - "8761:8761"
+    restart: always
+    networks:
+      - manicuria-net
+
+  empresas-servicio:
+    build: empresas-servicio
+    mem_limit: 512m
+    ports:
+      - "8081:8081"
+    environment:
+      DB_URL: jdbc:mysql://empresas-db:3306/manicuria_empresas?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USERNAME: prueba
+      DB_PASSWORD: prueba
+    restart: always    
+    depends_on:
+      empresas-db:
+        condition: service_healthy
+    networks:
+      - manicuria-net
+
+  servicios-servicio:
+    build: servicios-servicio
+    mem_limit: 512m
+    ports:
+      - "8083:8083"
+    environment:
+      DB_URL: jdbc:mysql://servicios-db:3306/manicuria_servicios?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USERNAME: prueba
+      DB_PASSWORD: prueba
+    restart: always    
+    depends_on:
+      servicios-db:
+        condition: service_healthy
+    networks:
+      - manicuria-net
+
+  profesionales-servicio:
+    build: profesionales-servicio
+    mem_limit: 512m
+    ports:
+      - "8085:8085"
+    environment:
+      DB_URL: jdbc:mysql://profesionales-db:3306/manicuria_profesionales?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USERNAME: prueba
+      DB_PASSWORD: prueba
+    restart: always    
+    depends_on:
+      profesionales-db:
+        condition: service_healthy
+    networks:
+      - manicuria-net
+
+  imagenes-servicio:
+    build: imagenes-servicio
+    mem_limit: 512m
+    ports:
+      - "8087:8087"
+    environment:
+      DB_URL: jdbc:mysql://imagenes-db:3306/manicuria_imagenes?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USERNAME: prueba
+      DB_PASSWORD: prueba
+    restart: always    
+    depends_on:
+      imagenes-db:
+        condition: service_healthy
+    networks:
+      - manicuria-net
+  
+  citas-servicio:
+    build: citas-servicio
+    mem_limit: 512m
+    ports:
+      - "8089:8089"
+    environment:
+      DB_URL: jdbc:mysql://citas-db:3306/manicuria_citas?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USERNAME: prueba
+      DB_PASSWORD: prueba
+    restart: always    
+    depends_on:
+      citas-db:
+        condition: service_healthy
+    networks:
+      - manicuria-net
+
+  turnos-servicio:
+    build: turnos-servicio
+    mem_limit: 512m
+    ports:
+      - "8091:8091"
+    environment:
+      DB_URL: jdbc:mysql://turnos-db:3306/manicuria_turnos?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USERNAME: prueba
+      DB_PASSWORD: prueba
+    restart: always    
+    depends_on:
+      turnos-db:
+        condition: service_healthy
+    networks:
+      - manicuria-net
+  
+  empresas-db:
+    image: mysql:latest
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: prueba
+      MYSQL_DATABASE: manicuria_empresas      
+      MYSQL_USER: prueba
+      MYSQL_PASSWORD: prueba
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 30s   
+      retries: 20
+    networks:
+      - manicuria-net
+
+  servicios-db:
+    image: mysql:latest
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: prueba
+      MYSQL_DATABASE: manicuria_servicios      
+      MYSQL_USER: prueba
+      MYSQL_PASSWORD: prueba
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 30s   
+      retries: 20
+    networks:
+      - manicuria-net
+
+  profesionales-db:
+    image: mysql:latest
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: prueba
+      MYSQL_DATABASE: manicuria_profesionales      
+      MYSQL_USER: prueba
+      MYSQL_PASSWORD: prueba
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 30s   
+      retries: 20
+    networks:
+      - manicuria-net
+
+  imagenes-db:
+    image: mysql:latest
+    ports:
+      - "3310:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: prueba
+      MYSQL_DATABASE: manicuria_imagenes      
+      MYSQL_USER: prueba
+      MYSQL_PASSWORD: prueba
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 30s   
+      retries: 20
+    networks:
+      - manicuria-net
+
+  citas-db:
+    image: mysql:latest
+    ports:
+      - "3311:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: prueba
+      MYSQL_DATABASE: manicuria_citas      
+      MYSQL_USER: prueba
+      MYSQL_PASSWORD: prueba
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 30s   
+      retries: 20
+    networks:
+      - manicuria-net
+
+  turnos-db:
+    image: mysql:latest
+    ports:
+      - "3312:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: prueba
+      MYSQL_DATABASE: manicuria_turnos      
+      MYSQL_USER: prueba
+      MYSQL_PASSWORD: prueba
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 30s   
+      retries: 20
+    networks:
+      - manicuria-net
+
+
+networks:
+  manicuria-net:
+    driver: bridge
