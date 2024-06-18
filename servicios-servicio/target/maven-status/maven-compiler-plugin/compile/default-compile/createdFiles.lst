@@ -1,0 +1,7 @@
+com\manicuria\serviciosservicio\model\Servicio.class
+com\manicuria\serviciosservicio\controller\ServicioController.class
+com\manicuria\serviciosservicio\dto\ErrorResponse.class
+com\manicuria\serviciosservicio\repository\IServicioRepository.class
+com\manicuria\serviciosservicio\service\IServicioService.class
+com\manicuria\serviciosservicio\service\ServicioService.class
+com\manicuria\serviciosservicio\ServiciosServicioApplication.class

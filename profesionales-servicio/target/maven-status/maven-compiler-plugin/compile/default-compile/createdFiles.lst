@@ -1,0 +1,7 @@
+com\manicuria\profesionalesservicio\repository\IProfesionalRepository.class
+com\manicuria\profesionalesservicio\dto\ErrorResponse.class
+com\manicuria\profesionalesservicio\controller\ProfesionalController.class
+com\manicuria\profesionalesservicio\ProfesionalesServicioApplication.class
+com\manicuria\profesionalesservicio\service\IProfesionalService.class
+com\manicuria\profesionalesservicio\service\ProfesionalService.class
+com\manicuria\profesionalesservicio\model\Profesional.class

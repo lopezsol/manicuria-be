@@ -1,0 +1,9 @@
+com\manicuria\citasservicio\dto\ErrorResponse.class
+com\manicuria\citasservicio\repository\ICitaRepository.class
+com\manicuria\citasservicio\model\Cita.class
+com\manicuria\citasservicio\controller\CitaController.class
+com\manicuria\citasservicio\service\CitaService.class
+com\manicuria\citasservicio\service\ICitaService.class
+com\manicuria\citasservicio\dto\CitaHoraDTO.class
+com\manicuria\citasservicio\dto\CitaHoraPrimerProfesionalDTO.class
+com\manicuria\citasservicio\CitasServicioApplication.class

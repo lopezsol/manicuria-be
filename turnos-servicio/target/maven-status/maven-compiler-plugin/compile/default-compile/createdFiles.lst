@@ -1,0 +1,14 @@
+com\manicuria\turnosservicio\model\Turno.class
+com\manicuria\turnosservicio\dto\CitaDTO.class
+com\manicuria\turnosservicio\repository\ProfesionalAPI.class
+com\manicuria\turnosservicio\repository\CitaAPI.class
+com\manicuria\turnosservicio\service\TurnoService.class
+com\manicuria\turnosservicio\repository\ITurnoRepository.class
+com\manicuria\turnosservicio\repository\ServicioAPI.class
+com\manicuria\turnosservicio\service\ITurnoService.class
+com\manicuria\turnosservicio\TurnosServicioApplication.class
+com\manicuria\turnosservicio\dto\TurnoDTO.class
+com\manicuria\turnosservicio\controller\TurnoController.class
+com\manicuria\turnosservicio\dto\ErrorResponse.class
+com\manicuria\turnosservicio\dto\ProfesionalDTO.class
+com\manicuria\turnosservicio\dto\ServicioDTO.class
