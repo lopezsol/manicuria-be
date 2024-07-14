@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CitaService implements ICitaService {
@@ -54,7 +56,7 @@ public class CitaService implements ICitaService {
         LocalTime hora = obtenerHora();
         List<Cita> citas = citaRepository.findAllByProfesionalesDisponiblesAndFechaGreaterThanEqualOrderByFechaAsc(
                 idProfesional, fecha);
-        return filtrarCitaFechaHora(citas,fecha,hora);
+        return filtrarCitaFechaHora(citas, fecha, hora);
     }
 
     @Override
@@ -98,6 +100,7 @@ public class CitaService implements ICitaService {
             LocalDate fecha) {
 
         LocalTime hora = obtenerHora();
+        System.out.println("hora" + hora);
         LocalDate fechaActual = obtenerFechaActual();
         List<Cita> citas;
         /*
@@ -155,6 +158,11 @@ public class CitaService implements ICitaService {
 
     }
 
+    @Override
+    public Cita traerCitaPorProfesionalFechaHora(Long idProfesional, LocalDate fecha, LocalTime hora) {
+        return citaRepository.findByProfesionalesDisponiblesAndFechaAndHora(idProfesional, fecha, hora);
+    }
+
     private static List<CitaHoraPrimerProfesionalDTO> getCitaHoraPrimerProfesionalDTOS(
             List<Long> listaProfesionales, List<Cita> citas) {
         List<CitaHoraPrimerProfesionalDTO> citasHorasDTO = new ArrayList<>();
@@ -196,7 +204,7 @@ public class CitaService implements ICitaService {
         indicada como parametro
      */
     private List<Cita> filtrarCitaFechaHora(List<Cita> listaCitas, LocalDate fecha,
-                                           LocalTime hora) {
+                                            LocalTime hora) {
         listaCitas.removeIf(c -> c.getFecha().equals(fecha) && c.getHora().isBefore(hora));
         return listaCitas;
 

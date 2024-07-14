@@ -3,11 +3,14 @@ package com.manicuria.citasservicio.repository;
 import com.manicuria.citasservicio.model.Cita;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ICitaRepository extends JpaRepository<Cita, Long> {
@@ -30,5 +33,7 @@ public interface ICitaRepository extends JpaRepository<Cita, Long> {
 
     List<Cita> findByFechaBetweenAndProfesionalesDisponiblesInOrderByFechaAsc(
             LocalDate fechaInicio, LocalDate fechaFin, List<Long> idProfesionales);
+
+    Cita findByProfesionalesDisponiblesAndFechaAndHora(Long idProfesional,LocalDate fecha, LocalTime hora);
 
 }
