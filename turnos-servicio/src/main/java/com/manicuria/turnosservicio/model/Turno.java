@@ -21,5 +21,5 @@ public class Turno {
     private Long idCita;
     private Long idServicio;
     private Long idProfesional;
-    private String nombreCliente;
+    private String dni;
 }

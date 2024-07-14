@@ -21,7 +21,7 @@ public class TurnoDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nombreCliente;
+    private String dni;
 
     private LocalDate fechaCita;
     private LocalTime horaCita;

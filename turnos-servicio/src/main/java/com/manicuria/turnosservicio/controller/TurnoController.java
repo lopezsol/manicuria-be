@@ -22,19 +22,18 @@ public class TurnoController {
     public ResponseEntity<Object> crearTurno(@RequestBody Turno turno) {
         if (turno == null || turno.getIdCita() == null || turno.getIdProfesional() == null
                 || turno.getIdServicio() == null
-                || turno.getNombreCliente() == null
-                || turno.getNombreCliente().isBlank()) {
+                || turno.getDni() == null
+                || turno.getDni().isBlank()) {
             ErrorResponse errorResponse = new ErrorResponse("Los datos del" +
-                    " turno son incorrectos o faltan",400);
+                    " turno son incorrectos o faltan", 400);
             return ResponseEntity.badRequest().body(errorResponse);
         }
         try {
             ErrorResponse response = turnoService.crearTurno(turno);
 
-            if(response.getStatus()==500){
+            if (response.getStatus() == 500) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-            }
-            else {
+            } else {
                 return ResponseEntity.status(HttpStatus.CREATED).build();
             }
 
@@ -57,7 +56,7 @@ public class TurnoController {
         try {
             TurnoDTO turnoBuscado = turnoService.traerTurnoDTO(id);
             if (turnoBuscado == null) {
-                //este error funciona cuando la imagen no existe o cuando
+                //este error funciona cuando el turno no existe o cuando
                 // ocurre un error en la comunicacion de los servidores
                 ErrorResponse errorResponse = new ErrorResponse("Error al intentar" +
                         " obtener el turno con id " + id, 404);
@@ -74,13 +73,11 @@ public class TurnoController {
         try {
             ErrorResponse response = turnoService.eliminarTurno(id);
 
-            if(response.getStatus()==404){
+            if (response.getStatus() == 404) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-            }
-            else if(response.getStatus()==500){
+            } else if (response.getStatus() == 500) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-            }
-            else {
+            } else {
                 return ResponseEntity.noContent().build();
             }
         } catch (Exception e) {
@@ -92,8 +89,8 @@ public class TurnoController {
     public ResponseEntity<Object> editarTurno(@RequestBody Turno turno) {
         if (turno == null || turno.getIdCita() == null || turno.getIdProfesional() == null
                 || turno.getIdServicio() == null
-                || turno.getNombreCliente() == null
-                || turno.getNombreCliente().isBlank() || turno.getId() == null
+                || turno.getDni() == null
+                || turno.getDni().isBlank() || turno.getId() == null
         ) {
             ErrorResponse errorResponse = new ErrorResponse("Los datos del" +
                     " turno son incorrectos o faltan", 400);
@@ -105,5 +102,15 @@ public class TurnoController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(errorServidor);
         }
+    }
+
+    @GetMapping("/traer/dni/{dni}")
+    public ResponseEntity<Object> traerTurnosPorDni(@PathVariable String dni) {
+        try {
+            return ResponseEntity.ok(turnoService.traerTurnosPorDniDTO(dni.trim()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
+
     }
 }
