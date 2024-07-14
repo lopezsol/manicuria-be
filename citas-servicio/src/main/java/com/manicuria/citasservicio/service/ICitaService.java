@@ -5,6 +5,7 @@ import com.manicuria.citasservicio.dto.CitaHoraPrimerProfesionalDTO;
 import com.manicuria.citasservicio.model.Cita;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface ICitaService {
@@ -38,5 +39,7 @@ public interface ICitaService {
     public void eliminarProfesionalDisponible(Long idProfesional, Long idCita);
 
     public void eliminarProfesionalReservado(Long idProfesional, Long idCita);
+
+    public Cita traerCitaPorProfesionalFechaHora(Long idProfesional, LocalDate fecha, LocalTime hora);
 
 }

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -217,6 +218,26 @@ public class CitaController {
         try {
             citaService.eliminarProfesionalReservado(idProfesional, idCita);
             return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(errorServidor);
+        }
+    }
+
+    @GetMapping("/filtrar/profesional-fecha-hora")
+    public ResponseEntity<Object> traerCitaPorProfesionalFechaHora(
+            @RequestParam("idProfesional") Long idProfesional,
+            @RequestParam("fecha") LocalDate fecha,
+            @RequestParam("hora")LocalTime hora) {
+        try {
+            Cita citaBuscada = citaService.
+                    traerCitaPorProfesionalFechaHora(idProfesional, fecha, hora);
+
+            if (citaBuscada==null) {
+                ErrorResponse errorResponse = new ErrorResponse("No se encontró" +
+                        " una cita para los filtros solicitados");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+            return ResponseEntity.ok(citaBuscada);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(errorServidor);
         }
