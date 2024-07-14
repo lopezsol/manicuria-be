@@ -123,7 +123,6 @@ public class TurnoService implements ITurnoService {
         List<Turno> turnos = turnoRepository.findAllByDni(dni);
         List<TurnoDTO> turnosDTO = new ArrayList<>();
         for (Turno turno : turnos) {
-            System.out.println("turno id: " + turno.getId());
             TurnoDTO turnoDTO = this.traerTurnoDTO(turno.getId());
             if (turnoDTO != null) turnosDTO.add(turnoDTO);
         }
