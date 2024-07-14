@@ -18,4 +18,6 @@ public interface ITurnoService {
     public ErrorResponse eliminarTurno(Long id);
 
     public void editarTurno(Turno turno);
+
+    public List<TurnoDTO> traerTurnosPorDniDTO(String dni);
 }

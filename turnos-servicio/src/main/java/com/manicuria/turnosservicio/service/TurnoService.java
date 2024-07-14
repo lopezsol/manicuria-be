@@ -73,7 +73,7 @@ public class TurnoService implements ITurnoService {
             ProfesionalDTO profesionalDTO = profesionalAPI.traerProfesional(turno.getIdProfesional());
 
             turnoDTO.setId(turno.getId());
-            turnoDTO.setNombreCliente(turno.getNombreCliente());
+            turnoDTO.setDni(turno.getDni());
 
             turnoDTO.setFechaCita(citaDTO.getFecha());
             turnoDTO.setHoraCita(citaDTO.getHora());
@@ -116,5 +116,17 @@ public class TurnoService implements ITurnoService {
     @Override
     public void editarTurno(Turno turno) {
         turnoRepository.save(turno);
+    }
+
+    @Override
+    public List<TurnoDTO> traerTurnosPorDniDTO(String dni) {
+        List<Turno> turnos = turnoRepository.findAllByDni(dni);
+        List<TurnoDTO> turnosDTO = new ArrayList<>();
+        for (Turno turno : turnos) {
+            System.out.println("turno id: " + turno.getId());
+            TurnoDTO turnoDTO = this.traerTurnoDTO(turno.getId());
+            if (turnoDTO != null) turnosDTO.add(turnoDTO);
+        }
+        return turnosDTO;
     }
 }
