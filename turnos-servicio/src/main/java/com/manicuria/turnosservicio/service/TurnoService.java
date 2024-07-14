@@ -48,7 +48,6 @@ public class TurnoService implements ITurnoService {
     public List<TurnoDTO> traerTurnosDTO() {
         List<Turno> turnos = turnoRepository.findAll();
         List<TurnoDTO> turnosDTO = new ArrayList<>();
-
         for (Turno turno : turnos) {
             TurnoDTO turnoDTO = this.traerTurnoDTO(turno.getId());
             if (turnoDTO != null) turnosDTO.add(turnoDTO);
@@ -65,11 +64,11 @@ public class TurnoService implements ITurnoService {
     public TurnoDTO traerTurnoDTO(Long id) {
         Turno turno = turnoRepository.findById(id).orElse(null);
         if (turno == null) return null;
-
         TurnoDTO turnoDTO = new TurnoDTO();
 
         try {
             ServicioDTO servicioDTO = servicioAPI.traerServicio(turno.getIdServicio());
+
             CitaDTO citaDTO = citaAPI.traerCita(turno.getIdCita());
             ProfesionalDTO profesionalDTO = profesionalAPI.traerProfesional(turno.getIdProfesional());
 
