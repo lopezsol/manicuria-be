@@ -100,7 +100,6 @@ public class CitaService implements ICitaService {
             LocalDate fecha) {
 
         LocalTime hora = obtenerHora();
-        System.out.println("hora" + hora);
         LocalDate fechaActual = obtenerFechaActual();
         List<Cita> citas;
         /*

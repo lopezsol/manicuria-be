@@ -35,7 +35,6 @@ public class TurnoService implements ITurnoService {
 
 
         } catch (Exception e) {
-            System.out.println("error: " + e);
             return new ErrorResponse(e.getMessage(), 500);
         }
     }
@@ -103,7 +102,6 @@ public class TurnoService implements ITurnoService {
             return new ErrorResponse("Turno eliminado correctamente", 204);
 
         } catch (Exception e) {
-            System.out.println("error: " + e);
             return new ErrorResponse(e.getMessage(), 500);
 
         }
