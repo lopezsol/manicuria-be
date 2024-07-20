@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("turnos")
+@CrossOrigin
 public class TurnoController {
     @Autowired
     private ITurnoService turnoService;

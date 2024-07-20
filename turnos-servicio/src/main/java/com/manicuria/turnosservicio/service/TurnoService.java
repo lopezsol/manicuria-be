@@ -9,8 +9,9 @@ import com.manicuria.turnosservicio.repository.ServicioAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 
 @Service
 public class TurnoService implements ITurnoService {
@@ -47,12 +48,7 @@ public class TurnoService implements ITurnoService {
     @Override
     public List<TurnoDTO> traerTurnosDTO() {
         List<Turno> turnos = turnoRepository.findAll();
-        List<TurnoDTO> turnosDTO = new ArrayList<>();
-        for (Turno turno : turnos) {
-            TurnoDTO turnoDTO = this.traerTurnoDTO(turno.getId());
-            if (turnoDTO != null) turnosDTO.add(turnoDTO);
-        }
-        return turnosDTO;
+        return this.ordernarTurnos(turnos);
     }
 
     @Override
@@ -121,11 +117,54 @@ public class TurnoService implements ITurnoService {
     @Override
     public List<TurnoDTO> traerTurnosPorDniDTO(String dni) {
         List<Turno> turnos = turnoRepository.findAllByDni(dni);
-        List<TurnoDTO> turnosDTO = new ArrayList<>();
+        return this.ordernarTurnos(turnos);
+    }
+
+    private LocalDate obtenerFechaActual() {
+        return LocalDate.now();
+    }
+
+    private LocalTime obtenerHoraActual() {
+        return LocalTime.now();
+    }
+
+    private List<TurnoDTO> ordernarTurnos(List<Turno> turnos) {
+        List<TurnoDTO> turnosViejos = new ArrayList<>();
+        List<TurnoDTO> turnosNuevos = new ArrayList<>();
+        LocalDate fechaActual = this.obtenerFechaActual();
+        LocalTime horaActual = this.obtenerHoraActual();
+
         for (Turno turno : turnos) {
             TurnoDTO turnoDTO = this.traerTurnoDTO(turno.getId());
-            if (turnoDTO != null) turnosDTO.add(turnoDTO);
+            if (turnoDTO == null) continue;
+
+            if (turnoDTO.getFechaCita().isAfter(fechaActual) ||
+                    (turnoDTO.getFechaCita().equals(fechaActual) &&
+                            (turnoDTO.getHoraCita().equals(horaActual) || turnoDTO.getHoraCita().isAfter(horaActual))
+                    )) {
+                turnosNuevos.add(turnoDTO);
+            } else {
+                turnosViejos.add(turnoDTO);
+            }
         }
-        return turnosDTO;
+
+        ordenarTurnosPorFechaYHora(turnosViejos);
+        ordenarTurnosPorFechaYHora(turnosNuevos);
+        turnosNuevos.addAll(turnosViejos);
+
+        return turnosNuevos;
+    }
+
+    private void ordenarTurnosPorFechaYHora(List<TurnoDTO> turnos) {
+        turnos.sort(new Comparator<TurnoDTO>() {
+            @Override
+            public int compare(TurnoDTO t1, TurnoDTO t2) {
+                int dateComparison = t1.getFechaCita().compareTo(t2.getFechaCita());
+                if (dateComparison != 0) {
+                    return dateComparison;
+                }
+                return t1.getHoraCita().compareTo(t2.getHoraCita());
+            }
+        });
     }
 }
