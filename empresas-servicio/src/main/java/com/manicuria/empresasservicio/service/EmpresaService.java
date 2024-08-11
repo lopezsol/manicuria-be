@@ -75,7 +75,6 @@ public class EmpresaService implements IEmpresaService {
             empresaDTO.setLogo(logo);
             empresaDTO.setListaCarrusel(listaCarrusel);
         } catch (Exception e) {
-            System.out.println(e);
             return null;
         }
         return empresaDTO;
@@ -109,7 +108,6 @@ public class EmpresaService implements IEmpresaService {
         try {
             return imagenAPI.traerImagen(empresa.getLogo());
         } catch (Exception e) {
-            System.out.println(e);
             return null;
         }
     }
@@ -127,7 +125,6 @@ public class EmpresaService implements IEmpresaService {
                 ImagenDTO carrusel = imagenAPI.traerImagen(idImagen);
                 listaCarrusel.add(carrusel);
             } catch (Exception e) {
-                System.out.println(e);
                 return null;
             }
         }
